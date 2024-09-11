@@ -1,0 +1,541 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+using UnityEngine.UI;
+
+
+public class register : MonoBehaviour
+{
+    public Camera Ca_鏡頭;
+    public GameObject GO_ImageTarget;
+    public GameObject[] GO註冊紅球= new GameObject[10];
+    public GameObject head;
+    GameObject headsize;
+    GameObject headcontrol;
+    GameObject headSizeControl;
+   
+    public float angleXX, angleYY;
+    //public GameObject nosePoint;
+    int i = 0;
+    public float centerX, sizeCenterX, centerX0, centerX1, centerY0, centerY1, centerZ0, centerZ1;
+    public float centerY, sizeCenterY, centerX2, centerX3, centerY2, centerY3, centerZ2, centerZ3;
+    public float centerZ, sizeCenterZ, centerX4, centerX5, centerY4, centerY5, centerZ4, centerZ5;
+
+    float headCenterX;
+    float headCenterY;
+    float headCenterZ;
+    public float X0_X1_DistanceX;
+    public float X0_X1_DistanceY;
+    public float earToEar;
+    public float sizeEarToEar = 0.174642492f;
+
+    public float Y2_Y3_DistanceY;
+    public float Y2_Y3_DistanceZ;
+    public float headToChunk;
+    public float sizeHeadToChunk = 0.816609195f;
+
+    public float Z4_Z5_DistanceZ;
+    public float Z4_Z5_DistanceX;
+    public float noseToEars;
+    public float sizeNoseToHead = 0.08f;
+
+    public float angleX;
+    public float angleZ;
+
+    public float scaleX;
+    public float scaleY;
+    public float scaleZ;
+
+    float currentSizeX = 0;
+    float currentSizeY = 0;
+    float currentSizeZ = 0;
+
+    public Text PosAdjX;
+    public Text PosAdjY;
+    public Text PosAdjZ;
+    public float PosX = 0;
+    public float PosY = 0;
+    public float PosZ = 0;
+
+    public Text RotAdjX;
+    public Text RotAdjY;
+    public Text RotAdjZ;
+    public float RotX = 0;
+    public float RotY = 0;
+    public float RotZ = 0;
+
+    public Text SclAdjX;
+    public Text SclAdjY;
+    public Text SclAdjZ;
+    public float SclX = 0;
+    public float SclY = 0;
+    public float SclZ = 0;
+
+    float V_虛擬神庭 = 0.11341f;
+    float V_虛擬印堂 = 0.09516f;
+    float V_虛擬素膠 = 0.12382f;
+    float V_虛擬承漿 = 0.13463f;
+    float V_虛擬四白 = 0.09733f;
+
+    float hole_神庭_x;
+    float hole_神庭_y;
+    float hole_神庭_z;
+    
+
+    float hole_印堂_x;
+    float hole_印堂_y;
+    float hole_印堂_z;
+
+    float hole_素膠_x;
+    float hole_素膠_y;
+    float hole_素膠_z;
+
+    float hole_承漿_x;
+    float hole_承漿_y;
+    float hole_承漿_z;
+
+    float hole_四白_x;
+    float hole_四白_y;
+    float hole_四白_z;
+
+    float A_實際神庭;
+    float A_實際印堂;
+    float A_實際素膠;
+    float A_實際承漿;
+    float A_實際四白;
+
+    float E_神庭誤差;
+    float E_印堂誤差;
+    float E_素膠誤差;
+    float E_承漿誤差;
+    float E_四白誤差;
+
+    public Text N_神庭數值;
+    public Text N_印堂數值;
+    public Text N_素膠數值;
+    public Text N_承漿數值;
+    public Text N_四白數值;
+
+    float weight;
+    
+
+    float average_PosX;
+    float average_PosY;
+    float average_PosZ;
+
+    float average_RotX;
+    float average_RotY;
+    float average_RotZ;
+
+    float average_SclX;
+    float average_SclY;
+    float average_SclZ;
+    
+    float average_currentSclX;
+    float average_currentSclY;
+    float average_currentSclZ;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+    public void V_執行註冊()
+    {
+        //imagetarget 到上面的點
+        if (i < 10) 
+        {
+            if (i==4)
+            {
+                GO_ImageTarget.GetComponent<Renderer>().material.color = Color.green;
+            }
+            float F_x = GO_ImageTarget.transform.position.x;
+            float F_y = GO_ImageTarget.transform.position.y;
+            float F_z = GO_ImageTarget.transform.position.z;
+            GO註冊紅球[i].transform.position = new Vector3(F_x, F_y, F_z);
+            float f_x = GO_ImageTarget.transform.rotation.x;
+            float f_y = GO_ImageTarget.transform.rotation.y;
+            float f_z = GO_ImageTarget.transform.rotation.z;
+            GO註冊紅球[i].transform.rotation = Quaternion.Euler(f_x, f_y, f_z);
+            Instantiate(GO註冊紅球[i]);
+            GO註冊紅球[i].transform.parent = null;
+            
+        }
+        i++;
+
+        if (i == 1)
+        {
+            centerX0 = GO註冊紅球[0].transform.position.x;
+            centerY0 = GO註冊紅球[0].transform.position.y;
+            centerZ0 = GO註冊紅球[0].transform.position.z;
+            print("centerX0="+centerX0);
+            print("centerY0="+centerY0);            
+        }
+        if (i == 2)
+        {
+            centerX1 = GO註冊紅球[1].transform.position.x;
+            centerY1 = GO註冊紅球[1].transform.position.y;
+            centerZ1 = GO註冊紅球[1].transform.position.z;
+          
+         
+            X0_X1_DistanceX = Mathf.Abs(centerX0 - centerX1);
+            X0_X1_DistanceY = centerY0 -centerY1;
+            earToEar = Mathf.Pow(Mathf.Pow(X0_X1_DistanceX, 2) + Mathf.Pow(X0_X1_DistanceY, 2), 0.5f);
+            angleZ= Mathf.Atan(X0_X1_DistanceY / X0_X1_DistanceX) *(180/Mathf.PI);
+            
+        }
+             
+           
+        if (i == 3)
+        {
+            centerX2 = GO註冊紅球[2].transform.position.x;
+            centerY2 = GO註冊紅球[2].transform.position.y;
+            centerZ2 = GO註冊紅球[2].transform.position.z;
+            
+        }
+        if (i == 4)
+        {
+            centerX3 = GO註冊紅球[3].transform.position.x;
+            centerY3 = GO註冊紅球[3].transform.position.y;
+            centerZ3 = GO註冊紅球[3].transform.position.z;
+            
+            
+            
+            Y2_Y3_DistanceY = centerY2 - centerY3;
+            Y2_Y3_DistanceZ = centerZ2 - centerZ3;
+            angleX= Mathf.Atan(Y2_Y3_DistanceZ / Mathf.Abs(Y2_Y3_DistanceY)) * (180 / Mathf.PI);
+            headToChunk = Mathf.Pow(Mathf.Pow(Y2_Y3_DistanceY, 2) + Mathf.Pow(Y2_Y3_DistanceZ, 2), 0.5f);
+            
+        }
+        if (i == 5)
+        {
+            centerX4 = GO註冊紅球[4].transform.position.x;
+            centerY4 = GO註冊紅球[4].transform.position.y;
+            centerZ4 = GO註冊紅球[4].transform.position.z;
+            
+            centerX = (centerX0 + centerX1) / 2;
+            centerY = centerY4;
+            centerZ = (centerZ0 + centerZ1) / 2;
+
+            noseToEars = Mathf.Abs((centerZ4 - centerZ)) ;
+            scaleX = (earToEar / sizeEarToEar);
+            scaleY = (headToChunk / sizeHeadToChunk);
+            scaleZ = (noseToEars / sizeNoseToHead);
+            head.transform.rotation = Quaternion.Euler(0, 0, 0);
+            print("centerX="+centerX);
+            print("centerY=" + centerY);
+            print("centerZ=" + centerZ);
+            head.transform.position = new Vector3(centerX, centerY, centerZ);           
+            head.transform.LookAt(new Vector3(centerX,centerY,centerZ4));
+            headCenterX = centerX;
+            headCenterY = centerY;
+            headCenterZ = centerZ - (0.12f * scaleY);
+            head.transform.position = new Vector3(centerX, centerY , centerZ - (0.12f*scaleY));
+            //head.transform.position = new Vector3(centerX, centerY - (0.02f * scaleZ), centerZ - (0.12f * scaleY));
+            angleXX = head.transform.rotation.x;
+            angleYY = head.transform.rotation.y;
+            
+
+            head.transform.Rotate(0, 0, angleZ);
+             //head.transform.Rotate(angleX, 0, 0);
+            head.transform.localScale = new Vector3(1 * scaleX, 1 * scaleY, 1 * scaleZ);
+            currentSizeX = scaleX ;
+            currentSizeY = scaleY ;
+            currentSizeZ = scaleZ ;
+            headsize = head.transform.GetChild(0).gameObject;
+            
+            Instantiate(head);
+            
+            headcontrol = GameObject.FindGameObjectWithTag("head");
+            headSizeControl = GameObject.FindGameObjectWithTag("headsize");
+    }
+        if (i == 6)
+        {
+            hole_神庭_x = GO註冊紅球[5].transform.position.x;
+            hole_神庭_y = GO註冊紅球[5].transform.position.y;
+            hole_神庭_z = GO註冊紅球[5].transform.position.z;
+            A_實際神庭 = Mathf.Pow(Mathf.Pow((hole_神庭_x - headCenterX) / scaleX, 2) + Mathf.Pow((hole_神庭_y - headCenterY) / scaleY, 2) +
+                Mathf.Pow((hole_神庭_z - headCenterZ) / scaleZ, 2), 0.5f);
+            E_神庭誤差 = Mathf.Abs(A_實際神庭 - V_虛擬神庭);
+            N_神庭數值.text = "神庭:" + E_神庭誤差;
+        }
+        if (i == 7)
+        {
+            hole_印堂_x = GO註冊紅球[6].transform.position.x;
+            hole_印堂_y = GO註冊紅球[6].transform.position.y;
+            hole_印堂_z = GO註冊紅球[6].transform.position.z;
+            A_實際印堂 = Mathf.Pow(Mathf.Pow((hole_印堂_x - headCenterX) / scaleX, 2) + Mathf.Pow((hole_印堂_y - headCenterY) / scaleY, 2) +
+                Mathf.Pow((hole_印堂_z - headCenterZ) / scaleZ, 2), 0.5f);
+            E_印堂誤差 = Mathf.Abs(A_實際印堂 - V_虛擬印堂);
+            N_印堂數值.text = "印堂:" + E_印堂誤差;
+        }
+        if (i == 8)
+        {
+            hole_素膠_x = GO註冊紅球[7].transform.position.x;
+            hole_素膠_y = GO註冊紅球[7].transform.position.y;
+            hole_素膠_z = GO註冊紅球[7].transform.position.z;
+            A_實際素膠 = Mathf.Pow(Mathf.Pow((hole_素膠_x - headCenterX) / scaleX, 2) + Mathf.Pow((hole_素膠_y - headCenterY) / scaleY, 2) +
+                Mathf.Pow((hole_素膠_z - headCenterZ) / scaleZ, 2), 0.5f);
+            E_素膠誤差 = Mathf.Abs(A_實際素膠 - V_虛擬素膠);
+            N_素膠數值.text = "素膠:" + E_素膠誤差;
+        }
+        if (i == 9)
+        {
+            hole_承漿_x = GO註冊紅球[8].transform.position.x;
+            hole_承漿_y = GO註冊紅球[8].transform.position.y;
+            hole_承漿_z = GO註冊紅球[8].transform.position.z;
+            A_實際承漿 = Mathf.Pow(Mathf.Pow((hole_承漿_x - headCenterX) / scaleX, 2) + Mathf.Pow((hole_承漿_y - headCenterY) / scaleY, 2) +
+                Mathf.Pow((hole_承漿_z - headCenterZ) / scaleZ, 2), 0.5f);
+            E_承漿誤差 = Mathf.Abs(A_實際承漿 - V_虛擬承漿);
+            N_承漿數值.text = "承漿:" + E_承漿誤差;
+        }
+        if (i == 10)
+        {
+            hole_四白_x = GO註冊紅球[9].transform.position.x;
+            hole_四白_y = GO註冊紅球[9].transform.position.y;
+            hole_四白_z = GO註冊紅球[9].transform.position.z;
+            A_實際四白 = Mathf.Pow(Mathf.Pow((hole_四白_x - headCenterX) / scaleX, 2) + Mathf.Pow((hole_四白_y - headCenterY) / scaleY, 2) +
+                Mathf.Pow((hole_四白_z - headCenterZ) / scaleZ, 2), 0.5f);
+            E_四白誤差 = Mathf.Abs(A_實際四白 - V_虛擬四白);
+            N_四白數值.text = "四白:" + E_四白誤差;
+        }
+        
+    }
+    public void Positionleft()
+    {
+        headcontrol.transform.Translate(0.005f, 0, 0);
+        PosX = PosX + 0.005f;
+        PosAdjX.text = "X:" + PosX.ToString();
+    }
+    public void PositionRight()
+    {
+        headcontrol.transform.Translate(-0.005f, 0, 0);
+        PosX = PosX - 0.005f;
+        PosAdjX.text = "X:" + PosX.ToString();
+    }
+    public void PositionUp()
+    {
+        headcontrol.transform.Translate(0, 0.005f, 0);
+        PosY = PosY + 0.005f;
+        PosAdjY.text = "Y:" + PosY.ToString();
+    }
+    public void PositionDown()
+    {
+        headcontrol.transform.Translate(0, -0.005f, 0);
+        PosY = PosY - 0.005f;
+        PosAdjY.text = "Y:" + PosY.ToString();
+    }
+    public void PositionForward()
+    {
+        headcontrol.transform.Translate(0, 0, 0.005f);
+        PosZ = PosZ + 0.005f;
+        PosAdjZ.text = "Z:" + PosZ.ToString();
+    }
+    public void PositionBackward()
+    {
+        headcontrol.transform.Translate(0, 0, -0.005f);
+        PosZ = PosZ - 0.005f;
+        PosAdjZ.text = "Z:" + PosZ.ToString();
+    }
+    public void RotationUp()
+    {
+        headSizeControl.transform.Rotate(-1f, 0, 0);
+        RotX = RotX - 1f;
+        RotAdjX.text = "X:" + RotX.ToString();
+    }
+    public void RotationDown()
+    {
+        headSizeControl.transform.Rotate(1f, 0, 0);
+        RotX = RotX + 1f;
+        RotAdjX.text = "X:" + RotX.ToString();
+    }
+    public void RotationCounterCW()
+    {
+        headSizeControl.transform.Rotate(0, 1f, 0);
+        RotY = RotY + 1f;
+        RotAdjY.text = "Y:" + RotY.ToString();
+    }
+    public void RotationClockwise()
+    {
+        headSizeControl.transform.Rotate(0, -1f, 0);
+        RotY = RotY - 1f;
+        RotAdjY.text = "Y:" + RotY.ToString();
+    }
+    public void Rotationleft()
+    {
+        headSizeControl.transform.Rotate(0, 0, 1f);
+        RotZ = RotZ + 1f;
+        RotAdjZ.text = "Z:" + RotZ.ToString();
+    }
+    public void RotationRight()
+    {
+        headSizeControl.transform.Rotate(0, 0, -1f);
+        RotZ = RotZ - 1f;
+        RotAdjZ.text = "Z:" + RotZ.ToString();
+    }
+    public void totalSizeBigger()
+    {
+       
+        currentSizeX = currentSizeX + 0.02f;
+        currentSizeY = currentSizeY + 0.02f;
+        currentSizeZ = currentSizeZ + 0.02f;
+        SclX = SclX + 0.02f;
+        SclY = SclY + 0.02f;
+        SclZ = SclZ + 0.02f;
+        SclAdjX.text = "X:" + SclX.ToString();
+        SclAdjY.text = "Y:" + SclY.ToString();
+        SclAdjZ.text = "Z:" + SclZ.ToString();
+        headcontrol.transform.localScale = new Vector3(1 * (currentSizeX), 1 * (currentSizeY), 1 * (currentSizeZ));
+    }
+    public void totalSizeSmaller()
+    {
+
+        currentSizeX = currentSizeX - 0.02f;
+        currentSizeY = currentSizeY - 0.02f;
+        currentSizeZ = currentSizeZ - 0.02f;
+        SclX = SclX - 0.02f;
+        SclY = SclY - 0.02f;
+        SclZ = SclZ - 0.02f;
+        SclAdjX.text = "X:" + SclX.ToString();
+        SclAdjY.text = "Y:" + SclY.ToString();
+        SclAdjZ.text = "Z:" + SclZ.ToString();
+        headcontrol.transform.localScale = new Vector3(1 * (currentSizeX), 1 * (currentSizeY), 1 * (currentSizeZ));
+    }
+    public void earsSmaller()
+    {    
+        currentSizeX = currentSizeX -0.02f;
+        headcontrol.transform.localScale = new Vector3(1 * (currentSizeX), 1 * (currentSizeY), 1 * (currentSizeZ));
+        SclX = SclX - 0.02f;
+        SclAdjX.text = "X:" + SclX.ToString();
+    }
+    public void headSmaller()
+    {
+        currentSizeY = currentSizeY - 0.02f;
+        headcontrol.transform.localScale = new Vector3(1 * (currentSizeX), 1 * (currentSizeY), 1 * (currentSizeZ));
+        SclY = SclY - 0.02f;
+        SclAdjY.text = "Y:" + SclY.ToString();
+    }
+    public void noseSmaller()
+    {
+        currentSizeZ = currentSizeZ - 0.02f;
+        headcontrol.transform.localScale = new Vector3(1 * (currentSizeX), 1 * (currentSizeY), 1 * (currentSizeZ));
+        SclZ = SclZ - 0.02f;
+        SclAdjZ.text = "Z:" + SclZ.ToString();
+    }
+    public void Save()
+    { 
+        weight = PlayerPrefs.GetFloat("weight");
+
+       
+
+        average_PosX = (average_PosX * weight + PosX) / (weight + 1);
+        average_PosY = (average_PosY * weight + PosY) / (weight + 1);
+        average_PosZ = (average_PosZ * weight + PosZ) / (weight + 1);
+
+        average_RotX = (average_RotX * weight + RotX) / (weight + 1);
+        average_RotY = (average_RotY * weight + RotY) / (weight + 1);
+        average_RotZ = (average_RotZ * weight + RotZ) / (weight + 1);
+
+        average_SclX = (average_SclX * weight + SclX) / (weight + 1);
+        average_SclY = (average_SclY * weight + SclY) / (weight + 1);
+        average_SclZ = (average_SclZ * weight + SclZ) / (weight + 1);
+
+        average_currentSclX = (average_currentSclX * weight + SclX) / (weight + 1);
+        average_currentSclY = (average_currentSclY * weight + SclY) / (weight + 1);
+        average_currentSclZ = (average_currentSclZ * weight + SclZ) / (weight + 1);
+        weight++;
+        PlayerPrefs.SetFloat("weight", weight);
+
+        PlayerPrefs.SetFloat("average_PosX", average_PosX);
+        PlayerPrefs.SetFloat("average_PosY", average_PosY);
+        PlayerPrefs.SetFloat("average_PosZ", average_PosZ);
+
+        PlayerPrefs.SetFloat("average_RotX", average_RotX);
+        PlayerPrefs.SetFloat("average_RotY", average_RotY);
+        PlayerPrefs.SetFloat("average_RotZ", average_RotZ);
+
+        PlayerPrefs.SetFloat("average_SclX", average_SclX);
+        PlayerPrefs.SetFloat("average_SclY", average_SclY);
+        PlayerPrefs.SetFloat("average_SclZ", average_SclZ);
+
+        PlayerPrefs.SetFloat("average_currentSclX", average_currentSclX);
+        PlayerPrefs.SetFloat("average_currentSclY", average_currentSclY);
+        PlayerPrefs.SetFloat("average_currentSclZ", average_currentSclZ);
+
+
+
+
+        print(weight);
+    }
+    public void Import()
+    {
+        headcontrol.transform.position = new Vector3(centerX, centerY, centerZ);
+        headcontrol.transform.LookAt(new Vector3(centerX, centerY, centerZ4));
+        headcontrol.transform.position = new Vector3(centerX, centerY, centerZ - (0.12f * scaleY));
+        headcontrol.transform.Rotate(0, 0, angleZ);
+        headcontrol.transform.localScale = new Vector3(1 * scaleX, 1 * scaleY, 1 * scaleZ);
+
+        PosX = PlayerPrefs.GetFloat("average_PosX");
+        PosY = PlayerPrefs.GetFloat("average_PosY");
+        PosZ = PlayerPrefs.GetFloat("average_PosZ");
+
+        headcontrol.transform.Translate(PosX, 0, 0);
+        headcontrol.transform.Translate(0, PosY, 0);
+        headcontrol.transform.Translate(0, 0, PosZ);
+
+        PosAdjX.text = "X:" + PosX.ToString();
+        PosAdjY.text = "Y:" + PosY.ToString();
+        PosAdjZ.text = "Z:" + PosZ.ToString();
+
+        RotX = PlayerPrefs.GetFloat("average_RotX");
+        RotY = PlayerPrefs.GetFloat("average_RotY");
+        RotZ = PlayerPrefs.GetFloat("average_RotZ");
+
+        headcontrol.transform.Rotate(RotX, 0, 0);
+        headcontrol.transform.Rotate(0, RotY, 0);
+        headcontrol.transform.Rotate(0, 0, RotZ);
+
+        RotAdjX.text = "X:" + RotX.ToString();
+        RotAdjY.text = "Y:" + RotY.ToString();
+        RotAdjZ.text = "Z:" + RotZ.ToString();
+
+        SclX = PlayerPrefs.GetFloat("average_SclX");
+        SclY = PlayerPrefs.GetFloat("average_SclY");
+        SclZ = PlayerPrefs.GetFloat("average_SclZ");
+
+       
+
+        headcontrol.transform.localScale = new Vector3(1 * (scaleX+SclX), 1 * (scaleY+SclY), 1 * (scaleZ+SclZ));
+        currentSizeX = scaleX + SclX;
+        currentSizeY = scaleY + SclY;
+        currentSizeZ = scaleZ + SclZ;
+
+        SclAdjX.text = "X:" + SclX.ToString();
+        SclAdjY.text = "Y:" + SclY.ToString();
+        SclAdjZ.text = "Z:" + SclZ.ToString();
+    }
+    public void Reset()
+    {
+        weight = 0;
+        PlayerPrefs.SetFloat("weight", weight);
+        print(weight);
+
+        PlayerPrefs.SetFloat("average_PosX", 0);
+        PlayerPrefs.SetFloat("average_PosY",0);
+        PlayerPrefs.SetFloat("average_PosZ",0);
+
+        PlayerPrefs.SetFloat("average_RotX", 0);
+        PlayerPrefs.SetFloat("average_RotY", 0);
+        PlayerPrefs.SetFloat("average_RotZ", 0);
+
+        PlayerPrefs.SetFloat("average_SclX", scaleX);
+        PlayerPrefs.SetFloat("average_SclY", scaleY);
+        PlayerPrefs.SetFloat("average_SclZ", scaleZ);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
